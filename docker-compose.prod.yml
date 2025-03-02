@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  web:
+    image: ${DOCKER_HUB_USERNAME}/franchise-website:latest
+    container_name: franchise-website
+    ports:
+      - "80:80"
+    restart: always
+    environment:
+      - NODE_ENV=production
+    networks:
+      - web-network
+    # 필요한 경우 볼륨 설정
+    # volumes:
+    #   - ./logs:/var/log/nginx
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+
+networks:
+  web-network:
+    driver: bridge 

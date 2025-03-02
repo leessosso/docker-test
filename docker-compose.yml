@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+    # 볼륨 마운트 (개발 시 유용)
+    # volumes:
+    #   - ./dist:/usr/share/nginx/html
+    environment:
+      - NODE_ENV=production 

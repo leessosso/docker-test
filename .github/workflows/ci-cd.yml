@@ -7,6 +7,9 @@ on:
     branches: [main, master]
   workflow_dispatch:
 
+env:
+  ACTIONS_STEP_DEBUG: true # 디버그 로깅 활성화
+
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
@@ -85,7 +88,7 @@ jobs:
           target: "C:\\Users\\lee\\franchise-website"
           strip_components: 0
 
-      - name: Execute remote deployment script
+      - name: Execute deployment with PowerShell
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -94,4 +97,29 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
             cd C:\\Users\\lee\\franchise-website
-            "C:\\Program Files\\Git\\bin\\bash.exe" -c "./deploy.sh"
+
+            # PowerShell을 사용하여 Docker 명령어 직접 실행
+            powershell -Command "& {
+              Write-Host '배포 시작...'
+              
+              # Docker 명령어 실행
+              docker pull %DOCKER_HUB_USERNAME%/franchise-website:latest
+              docker-compose -f docker-compose.prod.yml down
+              docker-compose -f docker-compose.prod.yml up -d
+              
+              # 컨테이너 상태 확인
+              Start-Sleep -Seconds 5
+              $container = docker ps -q -f name=franchise-website
+              if ($container) {
+                Write-Host '컨테이너가 정상적으로 실행 중입니다.'
+              } else {
+                Write-Host '오류: 컨테이너가 실행되지 않았습니다.'
+                docker logs franchise-website
+                exit 1
+              }
+              
+              # 사용하지 않는 이미지 정리
+              docker image prune -af --filter 'until=24h'
+              
+              Write-Host '배포가 완료되었습니다!'
+            }"

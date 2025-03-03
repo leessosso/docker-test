@@ -94,5 +94,5 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
-            cd C:\\Users\\${{ secrets.SSH_USERNAME }}\\franchise-website
-            "C:\\Program Files\\Git\\bin\\bash.exe" -c "cd C:/Users/${{ secrets.SSH_USERNAME }}/franchise-website && bash deploy.sh"
+            cd C:/Users/${{ secrets.SSH_USERNAME }}/franchise-website
+            "C:/Program Files/Git/bin/bash.exe" -c "cd C:/Users/${{ secrets.SSH_USERNAME }}/franchise-website && bash deploy.sh"

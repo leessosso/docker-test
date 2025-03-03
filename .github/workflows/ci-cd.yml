@@ -87,11 +87,12 @@ jobs:
 
       - name: Execute remote deployment script
         uses: appleboy/ssh-action@master
+
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           port: ${{ secrets.SSH_PORT }}
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
-            cd C:\\Users\\lee\\franchise-website
-            powershell -Command "& 'C:\\Program Files\\Git\\bin\\bash.exe' -c 'bash deploy.sh'"
+            cd C:\\Users\\${{ secrets.SSH_USERNAME }}\\franchise-website
+            "C:\\Program Files\\Git\\bin\\bash.exe" -c "./deploy.sh"

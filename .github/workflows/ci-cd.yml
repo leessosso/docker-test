@@ -74,7 +74,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Execute deployment commands directly
+      - name: Copy deployment files via SSH
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          port: ${{ secrets.SSH_PORT }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          source: "docker-compose.prod.yml,nginx.conf,deploy.sh,.env.example"
+          target: "C:\\Users\\lee\\franchise-website"
+          strip_components: 0
+
+      - name: Execute remote deployment script
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -82,52 +93,5 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
-            cd C:\Users\lee\franchise-website
-
-            # 로그 함수 정의
-            echo "[$(date +'%Y-%m-%d %H:%M:%S')] 배포 시작..."
-
-            # 환경 변수 로드
-            if [ -f .env ]; then
-              export $(cat .env | grep -v '#' | awk '/=/ {print $1}')
-              echo "[$(date +'%Y-%m-%d %H:%M:%S')] 환경 변수를 로드했습니다."
-            else
-              echo "[$(date +'%Y-%m-%d %H:%M:%S')] 경고: .env 파일이 없습니다. .env.example을 복사하여 사용합니다."
-              cp .env.example .env
-              export $(cat .env | grep -v '#' | awk '/=/ {print $1}')
-            fi
-
-            # 필수 환경 변수 확인
-            if [ -z "$DOCKER_HUB_USERNAME" ]; then
-              echo "[$(date +'%Y-%m-%d %H:%M:%S')] 오류: DOCKER_HUB_USERNAME 환경 변수가 설정되지 않았습니다."
-              exit 1
-            fi
-
-            # 최신 이미지 가져오기
-            echo "[$(date +'%Y-%m-%d %H:%M:%S')] 최신 Docker 이미지를 가져오는 중..."
-            docker pull $DOCKER_HUB_USERNAME/franchise-website:latest
-
-            # 기존 컨테이너 중지 및 제거
-            echo "[$(date +'%Y-%m-%d %H:%M:%S')] 기존 컨테이너 정리 중..."
-            docker-compose -f docker-compose.prod.yml down || true
-
-            # 새 컨테이너 시작
-            echo "[$(date +'%Y-%m-%d %H:%M:%S')] 새 컨테이너 시작 중..."
-            docker-compose -f docker-compose.prod.yml up -d
-
-            # 컨테이너 상태 확인
-            echo "[$(date +'%Y-%m-%d %H:%M:%S')] 컨테이너 상태 확인 중..."
-            sleep 5
-            if [ "$(docker ps -q -f name=franchise-website)" ]; then
-              echo "[$(date +'%Y-%m-%d %H:%M:%S')] 컨테이너가 정상적으로 실행 중입니다."
-            else
-              echo "[$(date +'%Y-%m-%d %H:%M:%S')] 오류: 컨테이너가 실행되지 않았습니다."
-              docker logs franchise-website
-              exit 1
-            fi
-
-            # 사용하지 않는 이미지 정리
-            echo "[$(date +'%Y-%m-%d %H:%M:%S')] 사용하지 않는 이미지 정리 중..."
-            docker image prune -af --filter "until=24h"
-
-            echo "[$(date +'%Y-%m-%d %H:%M:%S')] 배포가 완료되었습니다!"
+            cd C:\\Users\\lee\\franchise-website
+            "C:\\Program Files\\Git\\bin\\bash.exe" -c "./deploy.sh"

@@ -94,5 +94,4 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
-            cd C:\\Users\\lee\\franchise-website
-            deploy.sh
+            cd C:\\Users\\lee\\franchise-website && deploy.sh

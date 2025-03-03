@@ -94,4 +94,17 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
             cd C:\Users\lee\franchise-website
-            "C:\Program Files\Git\bin\bash.exe" -c "./deploy.sh"
+            # PowerShell을 사용하여 도커 명령 실행
+            powershell -Command "& {
+              Write-Host 'Starting deployment...'
+              # 도커 서비스 상태 확인
+              $dockerService = Get-Service docker
+              if ($dockerService.Status -ne 'Running') {
+                Write-Host 'Docker service is not running. Attempting to start...'
+                Start-Service docker
+              }
+              # Git Bash를 통해 deploy.sh 실행
+              & 'C:\Program Files\Git\bin\bash.exe' -c './deploy.sh'
+              Write-Host 'Deployment completed'
+              docker ps
+            }"

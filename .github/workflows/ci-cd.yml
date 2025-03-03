@@ -71,14 +71,21 @@ jobs:
     if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
 
     steps:
-      - name: Deploy to production server
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.DEPLOY_HOST }}
-          username: ${{ secrets.DEPLOY_USERNAME }}
-          key: ${{ secrets.DEPLOY_SSH_KEY }}
-          script: |
-            cd /path/to/deployment
-            docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/franchise-website:latest
-            docker-compose down
-            docker-compose up -d
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install sshpass
+        run: sudo apt-get install -y sshpass
+
+      - name: Deploy to server
+        env:
+          SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+        run: |
+          sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -p 1234 lee@218.154.6.165 '
+            cd /path/to/your/project &&
+            git pull &&
+            docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/franchise-website:latest &&
+            docker-compose down &&
+            docker-compose up -d &&
+            echo "Deployment completed!"
+          '

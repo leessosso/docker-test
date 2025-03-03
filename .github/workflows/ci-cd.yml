@@ -82,7 +82,7 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           password: ${{ secrets.SSH_PASSWORD }}
           source: "docker-compose.prod.yml,nginx.conf,deploy.sh,.env.example"
-          target: "/home/lee/franchise-website"
+          target: "C:\\Users\\lee\\franchise-website"
           strip_components: 0
 
       - name: Execute remote deployment script
@@ -93,6 +93,6 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
-            cd /home/lee/franchise-website
+            cd C:\\Users\\lee\\franchise-website
             chmod +x deploy.sh
             ./deploy.sh

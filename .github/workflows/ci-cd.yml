@@ -72,20 +72,27 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
-      - name: Install sshpass
-        run: sudo apt-get install -y sshpass
+      - name: Copy deployment files via SSH
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          port: ${{ secrets.SSH_PORT }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          source: "docker-compose.prod.yml,nginx.conf,deploy.sh,.env.example"
+          target: "/path/to/your/project"
+          strip_components: 0
 
-      - name: Deploy to server
-        env:
-          SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
-        run: |
-          sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -p 1234 lee@218.154.6.165 '
-            cd /path/to/your/project &&
-            git pull &&
-            docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/franchise-website:latest &&
-            docker-compose down &&
-            docker-compose up -d &&
-            echo "Deployment completed!"
-          '
+      - name: Execute remote deployment script
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          port: ${{ secrets.SSH_PORT }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          script: |
+            cd /path/to/your/project
+            chmod +x deploy.sh
+            ./deploy.sh

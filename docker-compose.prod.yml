@@ -9,8 +9,20 @@ services:
     restart: always
     environment:
       - NODE_ENV=production
+      - TZ=Asia/Seoul
     networks:
       - web-network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:80/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
     # 필요한 경우 볼륨 설정
     # volumes:
     #   - ./logs:/var/log/nginx

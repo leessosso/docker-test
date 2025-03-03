@@ -93,5 +93,5 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
-            cd /c/Users/lee/franchise-website
-            bash deploy.sh
+            cd C:\\Users\\lee\\franchise-website
+            powershell -Command "& 'C:\\Program Files\\Git\\bin\\bash.exe' -c 'bash deploy.sh'"

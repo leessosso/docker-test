@@ -95,4 +95,4 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
             cd C:\\Users\\${{ secrets.SSH_USERNAME }}\\franchise-website
-            "C:\\Program Files\\Git\\bin\\bash.exe" -c "./deploy.sh"
+            "C:\\Program Files\\Git\\bin\\bash.exe" -c "cd C:/Users/${{ secrets.SSH_USERNAME }}/franchise-website && bash deploy.sh"

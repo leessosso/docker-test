@@ -93,6 +93,5 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
-            cd C:\\Users\\lee\\franchise-website
-            chmod +x deploy.sh
-            ./deploy.sh
+            cd C:\Users\lee\franchise-website
+            "C:\Program Files\Git\bin\bash.exe" -c "./deploy.sh"

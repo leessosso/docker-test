@@ -26,7 +26,7 @@ fi
 
 # 최신 이미지 가져오기
 log "최신 Docker 이미지를 가져오는 중..."
-docker pull daxhoont/franchise-website:latest || {
+docker pull $DOCKER_HUB_USERNAME/franchise-website:latest || {
   log "오류: Docker 이미지를 가져오는데 실패했습니다."
   exit 1
 }

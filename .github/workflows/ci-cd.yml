@@ -97,4 +97,4 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           port: ${{ secrets.SSH_PORT }}
           password: ${{ secrets.SSH_PASSWORD }}
-          script: cd C:/Users/lee/franchise-website && chmod +x k8s-deploy.sh && export DOCKER_HUB_USERNAME=${{ secrets.DOCKER_HUB_USERNAME }} && export TAG=${{ github.sha }} && ./k8s-deploy.sh
+          script: cd C:/Users/lee/franchise-website && export DOCKER_HUB_USERNAME=${{ secrets.DOCKER_HUB_USERNAME }} && export TAG=${{ github.sha }} && bash k8s-deploy.sh

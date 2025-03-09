@@ -99,7 +99,24 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
             cd C:/Users/lee/franchise-website
-            powershell -Command "kubectl delete -k ./k8s -n default" 2>$null || true
-            powershell -Command "kubectl apply -k ./k8s -n default"
-            powershell -Command "kubectl set image deployment/franchise-website franchise-website=${{ secrets.DOCKER_HUB_USERNAME }}/franchise-website:${{ github.sha }} -n default"
-            powershell -Command "kubectl rollout status deployment/franchise-website -n default"
+            powershell -Command {
+              Write-Host "=== 기존 리소스 삭제 중... ==="
+              kubectl delete -k ./k8s -n default 2>$null
+              if ($LASTEXITCODE -ne 0) { Write-Host "기존 리소스가 없거나 삭제 실패" }
+              
+              Write-Host "=== 새로운 리소스 배포 중... ==="
+              kubectl apply -k ./k8s -n default
+              if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+              
+              Write-Host "=== 이미지 업데이트 중... ==="
+              kubectl set image deployment/franchise-website franchise-website=${{ secrets.DOCKER_HUB_USERNAME }}/franchise-website:${{ github.sha }} -n default
+              if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+              
+              Write-Host "=== 배포 상태 확인 중... ==="
+              kubectl rollout status deployment/franchise-website -n default --timeout=180s
+              if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+              
+              Write-Host "=== 배포된 리소스 확인 중... ==="
+              kubectl get pods -n default
+              kubectl get services -n default
+            }

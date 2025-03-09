@@ -87,7 +87,7 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           password: ${{ secrets.SSH_PASSWORD }}
           source: "k8s/,k8s-deploy.sh,.env.example"
-          target: "C:\\Users\\lee\\franchise-website"
+          target: "C:/Users/lee/franchise-website"
           strip_components: 0
 
       - name: Execute remote Kubernetes deployment script
@@ -97,9 +97,4 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           port: ${{ secrets.SSH_PORT }}
           password: ${{ secrets.SSH_PASSWORD }}
-          script: |
-            cd C:\\Users\\lee\\franchise-website
-            chmod +x k8s-deploy.sh
-            export DOCKER_HUB_USERNAME=${{ secrets.DOCKER_HUB_USERNAME }}
-            export TAG=${{ github.sha }}
-            ./k8s-deploy.sh
+          script: cd C:/Users/lee/franchise-website && chmod +x k8s-deploy.sh && export DOCKER_HUB_USERNAME=${{ secrets.DOCKER_HUB_USERNAME }} && export TAG=${{ github.sha }} && ./k8s-deploy.sh

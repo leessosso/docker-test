@@ -74,24 +74,32 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Copy deployment files via SSH
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'latest'
+
+      - name: Copy Kubernetes config and deployment files via SSH
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           port: ${{ secrets.SSH_PORT }}
           password: ${{ secrets.SSH_PASSWORD }}
-          source: "docker-compose.prod.yml,nginx.conf,deploy.sh,.env.example"
+          source: "k8s/,k8s-deploy.sh,.env.example"
           target: "C:\\Users\\lee\\franchise-website"
           strip_components: 0
 
-      - name: Execute remote deployment script
+      - name: Execute remote Kubernetes deployment script
         uses: appleboy/ssh-action@master
-
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           port: ${{ secrets.SSH_PORT }}
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
-            cd C:\\Users\\lee\\franchise-website && deploy.sh
+            cd C:\\Users\\lee\\franchise-website
+            chmod +x k8s-deploy.sh
+            export DOCKER_HUB_USERNAME=${{ secrets.DOCKER_HUB_USERNAME }}
+            export TAG=${{ github.sha }}
+            ./k8s-deploy.sh

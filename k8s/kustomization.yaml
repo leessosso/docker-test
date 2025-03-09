@@ -1,0 +1,20 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - deployment.yaml
+  - service.yaml
+  - configmap.yaml
+  - ingress.yaml
+
+# 환경 변수를 대체하기 위한 설정
+# secretGenerator:
+# - name: regcred
+#   files:
+#   - .dockerconfigjson=.docker/config.json
+#   type: kubernetes.io/dockerconfigjson
+
+# 공통 레이블과 애노테이션 설정
+commonLabels:
+  app: franchise-website
+  environment: production 

@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: franchise-website-service
+  labels:
+    app: franchise-website
+spec:
+  type: LoadBalancer  # 클라우드 환경에서 사용할 경우, 온프레미스라면 NodePort로 변경 가능
+  ports:
+  - port: 80
+    targetPort: 80
+    protocol: TCP
+    name: http
+  selector:
+    app: franchise-website 

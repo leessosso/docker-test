@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: franchise-website
+  labels:
+    app: franchise-website
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: franchise-website
+  template:
+    metadata:
+      labels:
+        app: franchise-website
+    spec:
+      containers:
+      - name: franchise-website
+        image: ${DOCKER_HUB_USERNAME}/franchise-website:latest
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+        env:
+        - name: NODE_ENV
+          value: "production"
+        - name: TZ
+          value: "Asia/Seoul"
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 10
+          periodSeconds: 5
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 15
+          periodSeconds: 10
+      imagePullSecrets:
+      - name: regcred 

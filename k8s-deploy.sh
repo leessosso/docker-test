@@ -8,25 +8,23 @@ log() {
   echo "[$(date +'%Y-%m-%d %H:%M:%S')] $1"
 }
 
-# 환경 변수 로드
-if [ -f .env ]; then
-  export $(cat .env | grep -v '#' | awk '/=/ {print $1}')
-  log "환경 변수를 로드했습니다."
-else
-  log "경고: .env 파일이 없습니다. .env.example을 복사하여 사용합니다."
-  cp .env.example .env
-  export $(cat .env | grep -v '#' | awk '/=/ {print $1}')
-fi
+# 명령줄 인자 확인
+DOCKER_HUB_USERNAME=$1
+TAG=$2
 
-# 필수 환경 변수 확인
+# 필수 인자 확인
 if [ -z "$DOCKER_HUB_USERNAME" ]; then
-  log "오류: DOCKER_HUB_USERNAME 환경 변수가 설정되지 않았습니다."
+  log "오류: DOCKER_HUB_USERNAME 인자가 전달되지 않았습니다."
   exit 1
 fi
 
+if [ -z "$TAG" ]; then
+  log "경고: TAG가 지정되지 않아 'latest'를 사용합니다."
+  TAG="latest"
+fi
+
 # 환경 변수 기본값 설정
-TAG=${TAG:-latest}
-REPLICAS=${REPLICAS:-3}
+REPLICAS=${REPLICAS:-1}  # 미니PC 환경을 고려하여 기본값을 1로 설정
 K8S_NAMESPACE=${K8S_NAMESPACE:-default}
 IMAGE_NAME="$DOCKER_HUB_USERNAME/franchise-website:$TAG"
 
@@ -47,7 +45,7 @@ sed -i "s|\${DOCKER_HUB_USERNAME}/franchise-website:latest|$IMAGE_NAME|g" k8s/de
 
 # 레플리카 수 업데이트
 log "레플리카 수 설정: $REPLICAS"
-sed -i "s|replicas: 3|replicas: $REPLICAS|g" k8s/deployment.yaml
+sed -i "s|replicas: 1|replicas: $REPLICAS|g" k8s/deployment.yaml
 
 # Kustomize를 이용한 리소스 배포
 log "쿠버네티스 리소스 적용 중..."
@@ -75,4 +73,4 @@ fi
 INGRESS_HOST=$(kubectl get ingress franchise-website-ingress -n $K8S_NAMESPACE -o jsonpath='{.spec.rules[0].host}' 2>/dev/null || echo "")
 if [ ! -z "$INGRESS_HOST" ]; then
   log "인그레스로 접속: http://$INGRESS_HOST"
-fi 
+fi

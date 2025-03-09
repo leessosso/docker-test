@@ -97,4 +97,9 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           port: ${{ secrets.SSH_PORT }}
           password: ${{ secrets.SSH_PASSWORD }}
-          script: cd C:/Users/lee/franchise-website && bash k8s-deploy.sh "${{ secrets.DOCKER_HUB_USERNAME }}" "${{ github.sha }}"
+          script: |
+            cd C:/Users/lee/franchise-website
+            powershell -Command "kubectl delete -k ./k8s -n default" 2>$null || true
+            powershell -Command "kubectl apply -k ./k8s -n default"
+            powershell -Command "kubectl set image deployment/franchise-website franchise-website=${{ secrets.DOCKER_HUB_USERNAME }}/franchise-website:${{ github.sha }} -n default"
+            powershell -Command "kubectl rollout status deployment/franchise-website -n default"

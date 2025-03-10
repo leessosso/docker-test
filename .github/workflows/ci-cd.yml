@@ -74,40 +74,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install kubectl
-        uses: azure/setup-kubectl@v3
-        with:
-          version: 'latest'
-
-      - name: Copy Kubernetes config and deployment files via SSH
+      - name: Copy deployment files to server
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           port: ${{ secrets.SSH_PORT }}
           password: ${{ secrets.SSH_PASSWORD }}
-          source: "k8s/,k8s-deploy.sh,.env.example"
-          target: "C:/Users/lee/franchise-website"
+          source: "deploy.sh,docker-compose.prod.yml,.env.example"
+          target: "~/franchise-website"
           strip_components: 0
 
-      - name: Execute remote Kubernetes deployment script
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          port: ${{ secrets.SSH_PORT }}
-          password: ${{ secrets.SSH_PASSWORD }}
-          command_timeout: 30m
-          script: |
-            cd C:/Users/lee/franchise-website
-            {
-              echo "=== 배포 시작 시간: $(date) ==="
-              echo "=== k8s-deploy.sh 실행 중... ==="
-              bash k8s-deploy.sh "${{ secrets.DOCKER_HUB_USERNAME }}" "${{ github.sha }}"
-              echo "=== 배포 완료 시간: $(date) ==="
-            } 2>&1 | tee deployment.log
-
-      - name: Check deployment log exists
+      - name: Deploy to server
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -115,30 +93,4 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
-            cd C:/Users/lee/franchise-website
-            if [ -f deployment.log ]; then
-              echo "deployment.log 파일이 존재합니다."
-              cat deployment.log
-            else
-              echo "deployment.log 파일이 생성되지 않았습니다."
-              exit 1
-            fi
-
-      - name: Download deployment log
-        uses: appleboy/scp-action@master
-        continue-on-error: true
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          port: ${{ secrets.SSH_PORT }}
-          password: ${{ secrets.SSH_PASSWORD }}
-          source: "C:/Users/lee/franchise-website/deployment.log"
-          target: "."
-          strip_components: 0
-
-      - name: Upload deployment log
-        uses: actions/upload-artifact@v4
-        with:
-          name: deployment-log
-          path: deployment.log
-          if-no-files-found: warn
+            cd C:\\Users\\lee\\franchise-website && deploy.sh

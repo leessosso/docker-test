@@ -17,6 +17,7 @@ spec:
       containers:
       - name: franchise-website
         image: ${DOCKER_HUB_USERNAME}/franchise-website:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 80
         resources:
@@ -37,11 +38,17 @@ spec:
             port: 80
           initialDelaySeconds: 10
           periodSeconds: 5
+          timeoutSeconds: 3
+          successThreshold: 1
+          failureThreshold: 3
         livenessProbe:
           httpGet:
             path: /
             port: 80
           initialDelaySeconds: 15
           periodSeconds: 10
+          timeoutSeconds: 3
+          successThreshold: 1
+          failureThreshold: 3
       imagePullSecrets:
       - name: regcred 

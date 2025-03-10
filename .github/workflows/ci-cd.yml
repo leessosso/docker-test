@@ -100,26 +100,26 @@ jobs:
           command_timeout: 30m
           script: |
             cd C:/Users/lee/franchise-website
-            echo "=== 기존 리소스 삭제 중... ==="
-            kubectl delete -k ./k8s -n default || true
-            echo "삭제 완료 대기 중..."
-            sleep 10
-            
-            echo "=== 새로운 리소스 배포 중... ==="
-            kubectl apply -k ./k8s -n default
-            echo "리소스 생성 대기 중..."
-            sleep 5
-            
-            echo "=== 이미지 업데이트 중... ==="
-            kubectl set image deployment/franchise-website franchise-website=${{ secrets.DOCKER_HUB_USERNAME }}/franchise-website:${{ github.sha }} -n default
-            
-            echo "=== 배포 상태 확인 중... ==="
-            kubectl rollout status deployment/franchise-website -n default --timeout=300s
-            
-            echo "=== 배포된 리소스 확인 중... ==="
-            kubectl get pods -n default
-            kubectl get services -n default
-            
-            echo "=== 파드 로그 확인 중... ==="
-            POD_NAME=$(kubectl get pods -n default -l app=franchise-website -o jsonpath='{.items[0].metadata.name}')
-            kubectl logs $POD_NAME -n default
+            {
+              echo "=== 배포 시작 시간: $(date) ==="
+              echo "=== k8s-deploy.sh 실행 중... ==="
+              bash k8s-deploy.sh "${{ secrets.DOCKER_HUB_USERNAME }}" "${{ github.sha }}"
+              echo "=== 배포 완료 시간: $(date) ==="
+            } > deployment.log 2>&1
+
+      - name: Download deployment log
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          port: ${{ secrets.SSH_PORT }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          source: "C:/Users/lee/franchise-website/deployment.log"
+          target: "."
+          strip_components: 0
+
+      - name: Upload deployment log
+        uses: actions/upload-artifact@v4
+        with:
+          name: deployment-log
+          path: deployment.log

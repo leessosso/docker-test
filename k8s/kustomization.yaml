@@ -14,7 +14,13 @@ resources:
 #   - .dockerconfigjson=.docker/config.json
 #   type: kubernetes.io/dockerconfigjson
 
+labels:
+- pairs:
+    app: franchise-website
+    environment: production
+  includeSelectors: true
+
 # 공통 레이블과 애노테이션 설정
-commonLabels:
-  app: franchise-website
-  environment: production 
+# commonLabels:
+#   app: franchise-website
+#   environment: production 

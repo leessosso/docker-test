@@ -15,6 +15,8 @@ TAG=$2
 # 필수 인자 확인
 if [ -z "$DOCKER_HUB_USERNAME" ]; then
   log "오류: DOCKER_HUB_USERNAME 인자가 전달되지 않았습니다."
+  log "사용법: sh k8s-deploy.sh [DOCKER_HUB_USERNAME] [TAG]"
+  log "예시: sh k8s-deploy.sh johndoe v1.0.0"
   exit 1
 fi
 
@@ -55,22 +57,17 @@ kubectl apply -k k8s/ -n $K8S_NAMESPACE
 log "배포 상태 확인 중..."
 kubectl rollout status deployment/franchise-website -n $K8S_NAMESPACE
 
-# 서비스 및 인그레스 정보 출력
+# 서비스 정보 출력
 log "서비스 정보:"
 kubectl get service franchise-website-service -n $K8S_NAMESPACE
 
-log "인그레스 정보:"
-kubectl get ingress franchise-website-ingress -n $K8S_NAMESPACE 2>/dev/null || log "인그레스가 구성되지 않았습니다."
-
 log "===== 쿠버네티스 배포 완료 ====="
 
-# 접속 가능한 URL 출력
-NODE_PORT=$(kubectl get service franchise-website-service -n $K8S_NAMESPACE -o jsonpath='{.spec.ports[0].nodePort}' 2>/dev/null || echo "")
-if [ ! -z "$NODE_PORT" ]; then
-  log "NodePort로 접속: http://localhost:$NODE_PORT"
+# 접속 정보 출력
+log "접속 방법:"
+log "1. 로컬 접속: http://localhost:30080"
+log "2. 내부 네트워크 접속: http://[호스트IP]:30080"
+if [ -n "${EXTERNAL_IP}" ]; then
+  log "3. 외부 접속: http://${EXTERNAL_IP}:30080"
 fi
-
-INGRESS_HOST=$(kubectl get ingress franchise-website-ingress -n $K8S_NAMESPACE -o jsonpath='{.spec.rules[0].host}' 2>/dev/null || echo "")
-if [ ! -z "$INGRESS_HOST" ]; then
-  log "인그레스로 접속: http://$INGRESS_HOST"
-fi
+log "참고: 외부 접속을 위해서는 30080 포트에 대한 포트포워딩이 필요합니다."

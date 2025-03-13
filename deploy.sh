@@ -16,6 +16,7 @@ else
   log "경고: .env 파일이 없습니다. .env.example을 복사하여 사용합니다."
   cp .env.example .env
   export $(cat .env | grep -v '#' | awk '/=/ {print $1}')
+  echo "Created new .env file from .env.example"
 fi
 
 # 필수 환경 변수 확인

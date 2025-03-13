@@ -81,7 +81,7 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           port: ${{ secrets.SSH_PORT }}
           password: ${{ secrets.SSH_PASSWORD }}
-          source: "docker-compose.prod.yml,nginx.conf,deploy.sh,.env.example"
+          source: "docker-compose.prod.yml,nginx.conf,deploy.sh"
           target: "C:\\Users\\lee\\franchise-website"
           strip_components: 0
 

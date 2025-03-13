@@ -82,16 +82,16 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           password: ${{ secrets.SSH_PASSWORD }}
           source: "docker-compose.prod.yml,nginx.conf,deploy.sh,.env.example"
-          target: "C:\\Users\\lee\\franchise-website"
+          target: "/mnt/c/Users/lee/franchise-website"
           strip_components: 0
+  
 
       - name: Execute remote deployment script
         uses: appleboy/ssh-action@master
-
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           port: ${{ secrets.SSH_PORT }}
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
-            cd C:\\Users\\lee\\franchise-website && deploy.sh
+            cd /mnt/c/Users/lee/franchise-website && bash deploy.sh

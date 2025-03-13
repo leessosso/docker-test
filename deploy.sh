@@ -21,8 +21,18 @@ fi
 
 # 필수 환경 변수 확인
 if [ -z "$DOCKER_HUB_USERNAME" ]; then
-  log "오류: DOCKER_HUB_USERNAME 환경 변수가 설정되지 않았습니다."
-  exit 1
+  read -p "Docker Hub 사용자 이름을 입력하세요: " DOCKER_HUB_USERNAME
+  if [ -z "$DOCKER_HUB_USERNAME" ]; then
+    log "오류: Docker Hub 사용자 이름이 입력되지 않았습니다."
+    exit 1
+  fi
+  # .env 파일에 DOCKER_HUB_USERNAME 추가
+  if grep -q "DOCKER_HUB_USERNAME=" .env; then
+    sed -i "s|DOCKER_HUB_USERNAME=.*|DOCKER_HUB_USERNAME=$DOCKER_HUB_USERNAME|" .env
+  else
+    echo "DOCKER_HUB_USERNAME=$DOCKER_HUB_USERNAME" >> .env
+  fi
+  log "Docker Hub 사용자 이름이 .env 파일에 저장되었습니다."
 fi
 
 # Docker 이미지 태그 설정
@@ -41,7 +51,11 @@ log "기존 컨테이너 정리 중..."
 docker-compose -f docker-compose.prod.yml down || true
 
 # 환경 변수 설정
-echo "DOCKER_IMAGE=$DOCKER_IMAGE" > .env
+if grep -q "DOCKER_IMAGE=" .env; then
+    sed -i "s|DOCKER_IMAGE=.*|DOCKER_IMAGE=$DOCKER_IMAGE|" .env
+else
+    echo "DOCKER_IMAGE=$DOCKER_IMAGE" >> .env
+fi
 
 # 새 컨테이너 시작
 log "새 컨테이너 시작 중..."

@@ -159,3 +159,64 @@ export default tseslint.config({
   },
 })
 ```
+
+# 프랜차이즈 웹사이트 쿠버네티스 배포 가이드
+
+## 사전 요구사항
+
+- Docker Desktop with Kubernetes enabled
+- kubectl CLI tool
+- Docker Hub 계정
+
+## 배포 순서
+
+1. Docker Hub 인증 설정
+```bash
+# Docker Hub 인증 정보 설정
+sh create-docker-secret.sh [DOCKER_HUB_USERNAME] [DOCKER_HUB_PASSWORD]
+```
+
+2. 애플리케이션 배포
+```bash
+# 기본 배포 (latest 태그 사용)
+sh k8s-deploy.sh [DOCKER_HUB_USERNAME]
+
+# 특정 버전 배포
+sh k8s-deploy.sh [DOCKER_HUB_USERNAME] [TAG]
+```
+
+## 접속 방법
+
+1. 로컬 접속
+```
+http://localhost:30080
+```
+
+2. 내부 네트워크 접속
+```
+http://[호스트IP]:30080
+```
+
+3. 외부 접속 (포트포워딩 설정 필요)
+```
+http://[외부IP]:30080
+```
+
+## 환경 변수 설정
+
+- `REPLICAS`: 배포할 Pod 복제본 수 (기본값: 1)
+- `K8S_NAMESPACE`: 쿠버네티스 네임스페이스 (기본값: default)
+- `EXTERNAL_IP`: 외부 접속 IP (선택사항)
+
+예시:
+```bash
+export REPLICAS=2
+export K8S_NAMESPACE=production
+sh k8s-deploy.sh [DOCKER_HUB_USERNAME] [TAG]
+```
+
+## 주의사항
+
+1. 외부 접속을 위해서는 30080 포트에 대한 포트포워딩 설정이 필요합니다.
+2. 프로덕션 환경에서는 적절한 보안 설정을 추가하시기 바랍니다.
+3. 리소스 제한은 환경에 맞게 조정하시기 바랍니다.

@@ -59,6 +59,13 @@ docker pull $DOCKER_HUB_USERNAME/franchise-website:latest || {
 log "기존 컨테이너 정리 중..."
 docker-compose -f docker-compose.prod.yml down || true
 
+# 환경 변수 설정
+if grep -q "DOCKER_IMAGE=" .env; then
+    sed -i "s|DOCKER_IMAGE=.*|DOCKER_IMAGE=$DOCKER_IMAGE|" .env
+else
+    echo "DOCKER_IMAGE=$DOCKER_IMAGE" >> .env
+fi
+
 # 새 컨테이너 시작
 log "새 컨테이너 시작 중..."
 docker-compose -f docker-compose.prod.yml up -d || {

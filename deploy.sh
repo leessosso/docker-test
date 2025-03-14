@@ -57,7 +57,7 @@ docker pull $DOCKER_HUB_USERNAME/franchise-website:latest || {
 
 # 기존 컨테이너 중지 및 제거
 log "기존 컨테이너 정리 중..."
-docker-compose -f docker-compose.prod.yml down || true
+docker compose -f docker-compose.prod.yml down || true
 
 # 환경 변수 설정
 if grep -q "DOCKER_IMAGE=" .env; then
@@ -68,7 +68,7 @@ fi
 
 # 새 컨테이너 시작
 log "새 컨테이너 시작 중..."
-docker-compose -f docker-compose.prod.yml up -d || {
+docker compose -f docker-compose.prod.yml up -d || {
     log "오류: 컨테이너 시작에 실패했습니다."
     exit 1
 }

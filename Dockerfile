@@ -25,10 +25,10 @@ COPY --from=build /app/dist /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # 헬스체크 추가
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 CMD wget --quiet --tries=1 --spider http://localhost:80/ || exit 1
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 CMD wget --quiet --tries=1 --spider http://localhost:9876/ || exit 1
 
-# 80 포트 노출
-EXPOSE 80
+# 9876 포트 노출
+EXPOSE 9876
 
 # Nginx 실행
 CMD ["nginx", "-g", "daemon off;"] 

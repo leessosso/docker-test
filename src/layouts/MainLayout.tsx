@@ -10,7 +10,7 @@ const MainLayout = () => {
             <header className="bg-white shadow-md">
                 <div className="container mx-auto px-4 py-4">
                     <div className="flex justify-between items-center">
-                        <Link to="/" className="text-2xl font-bold text-blue-600">깃 푸시 0313</Link>
+                        <Link to="/" className="text-2xl font-bold text-blue-600">도커 데스크탑 삭제 0314</Link>
 
                         {/* 모바일 메뉴 버튼 */}
                         <div className="md:hidden">

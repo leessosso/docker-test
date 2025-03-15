@@ -16,6 +16,7 @@ const Contact = () => {
     // 제출 상태
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     // 입력 필드 변경 핸들러
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -28,13 +29,26 @@ const Contact = () => {
     };
 
     // 폼 제출 핸들러
-    const handleSubmit = (e: FormEvent) => {
+    const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
         setIsSubmitting(true);
+        setError(null);
 
-        // API 호출을 시뮬레이션 (실제로는 여기서 서버에 데이터를 전송)
-        setTimeout(() => {
-            setIsSubmitting(false);
+        try {
+            const response = await fetch('http://localhost:5000/api/contact', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData)
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.message || '문의 접수 중 오류가 발생했습니다.');
+            }
+
             setIsSubmitted(true);
             setFormData({
                 name: '',
@@ -51,7 +65,11 @@ const Contact = () => {
             setTimeout(() => {
                 setIsSubmitted(false);
             }, 3000);
-        }, 1500);
+        } catch (err) {
+            setError(err instanceof Error ? err.message : '문의 접수 중 오류가 발생했습니다.');
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     return (
@@ -80,6 +98,12 @@ const Contact = () => {
                                 {isSubmitted && (
                                     <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6">
                                         <p>문의가 성공적으로 접수되었습니다. 빠른 시일 내에 답변 드리겠습니다.</p>
+                                    </div>
+                                )}
+
+                                {error && (
+                                    <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
+                                        <p>{error}</p>
                                     </div>
                                 )}
 

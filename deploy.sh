@@ -60,10 +60,19 @@ log "기존 컨테이너 정리 중..."
 docker compose -f docker-compose.prod.yml down || true
 
 # 환경 변수 설정
+export DOCKER_IMAGE=${DOCKER_HUB_USERNAME}/franchise-website:latest
 if grep -q "DOCKER_IMAGE=" .env; then
     sed -i "s|DOCKER_IMAGE=.*|DOCKER_IMAGE=$DOCKER_IMAGE|" .env
 else
     echo "DOCKER_IMAGE=$DOCKER_IMAGE" >> .env
+fi
+
+# 네트워크 확인 및 생성
+if ! docker network ls | grep -q "franchise-network"; then
+    log "franchise-network 네트워크를 생성합니다..."
+    docker network create franchise-network
+else
+    log "franchise-network 네트워크가 이미 존재합니다."
 fi
 
 # 새 컨테이너 시작
@@ -88,4 +97,7 @@ fi
 log "사용하지 않는 이미지 정리 중..."
 docker image prune -af --filter "until=24h"
 
-log "배포가 완료되었습니다!" 
+log "프론트엔드 배포가 완료되었습니다!"
+log "프론트엔드와 백엔드 서비스가 모두 실행 중입니다."
+log "프론트엔드: http://localhost:9876"
+log "백엔드: http://localhost:5000" 

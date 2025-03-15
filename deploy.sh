@@ -67,12 +67,12 @@ else
     echo "DOCKER_IMAGE=$DOCKER_IMAGE" >> .env
 fi
 
-# 네트워크 확인 및 생성
+# 네트워크 확인
+log "franchise-network 네트워크 확인 중..."
 if ! docker network ls | grep -q "franchise-network"; then
-    log "franchise-network 네트워크를 생성합니다..."
-    docker network create franchise-network
-else
-    log "franchise-network 네트워크가 이미 존재합니다."
+    log "경고: franchise-network 네트워크가 없습니다. 백엔드를 먼저 배포해야 합니다."
+    log "백엔드 배포 명령어: cd ../docker-test-backend && ./deploy.sh"
+    exit 1
 fi
 
 # 새 컨테이너 시작

@@ -8,6 +8,7 @@ services:
     environment:
       - NODE_ENV=production
       - TZ=Asia/Seoul
+      - VITE_API_URL=http://franchise-backend:3000 # 백엔드 컨테이너 이름과 포트
     networks:
       - franchise-network
     healthcheck:

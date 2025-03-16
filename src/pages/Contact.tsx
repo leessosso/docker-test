@@ -35,7 +35,9 @@ const Contact = () => {
         setError(null);
 
         try {
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/contact`, {
+            // 환경 변수에서 API URL 가져오기
+            const apiUrl = import.meta.env.VITE_API_URL || '';
+            const response = await fetch(`${apiUrl}/api/contact`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

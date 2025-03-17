@@ -35,9 +35,8 @@ const Contact = () => {
         setError(null);
 
         try {
-            // 환경 변수에서 API URL 가져오기
-            const apiUrl = import.meta.env.VITE_API_URL || '';
-            const response = await fetch(`${apiUrl}/api/contact`, {
+            // Nginx 프록시를 사용하므로 상대 경로만 사용
+            const response = await fetch('/api/contact', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

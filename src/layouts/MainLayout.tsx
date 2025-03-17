@@ -1,8 +1,14 @@
-import { useState } from 'react';
-import { Outlet, Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Outlet, Link, useLocation } from 'react-router-dom';
 
 const MainLayout = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const location = useLocation();
+    
+    // 페이지 이동 시 메뉴 닫기
+    useEffect(() => {
+        setIsMenuOpen(false);
+    }, [location]);
 
     return (
         <div className="flex flex-col min-h-screen">

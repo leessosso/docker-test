@@ -16,7 +16,7 @@ const MainLayout = () => {
             <header className="bg-white shadow-md">
                 <div className="container mx-auto px-4 py-4">
                     <div className="flex justify-between items-center">
-                        <Link to="/" className="text-2xl font-bold text-blue-600">도커 헬스체크 수정 0317</Link>
+                        <Link to="/" className="text-2xl font-bold text-blue-600">README.md 수정 Typescript 버전 통일 0318</Link>
 
                         {/* 모바일 메뉴 버튼 */}
                         <div className="md:hidden">

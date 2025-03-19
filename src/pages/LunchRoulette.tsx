@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 
 const LunchRoulette: React.FC = () => {
   const [menuInput, setMenuInput] = useState<string>('');
@@ -6,6 +6,43 @@ const LunchRoulette: React.FC = () => {
   const [selectedMenu, setSelectedMenu] = useState<string | null>(null);
   const [isSpinning, setIsSpinning] = useState<boolean>(false);
   const [rotationAngle, setRotationAngle] = useState<number>(0);
+
+  // 메뉴 개수에 따라 섹터 각도 계산 (useMemo로 최적화)
+  const sectorAngles = useMemo(() => {
+    if (menuList.length === 0) return [];
+    const totalMenus = menuList.length;
+    
+    // 메뉴가 1개일 때는 전체 원을 그리기 위해 특별 처리
+    if (totalMenus === 1) {
+      return [{
+        startAngle: 0,
+        endAngle: 359.99, // 360도와 0도가 같아지는 것을 방지하기 위해 359.99도 사용
+        sweepAngle: 359.99
+      }];
+    }
+
+    const baseAngle = 360 / totalMenus;
+    
+    return menuList.map((_, index) => {
+      const startAngle = index * baseAngle;
+      const endAngle = (index + 1) * baseAngle;
+      
+      return {
+        startAngle,
+        endAngle,
+        sweepAngle: baseAngle
+      };
+    });
+  }, [menuList]);
+
+  // 섹터 색상 고정 (useMemo로 최적화)
+  const sectorColors = useMemo(() => {
+    const colors = [
+      '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEEAD',
+      '#D4A5A5', '#9B59B6', '#3498DB', '#E67E22', '#1ABC9C'
+    ];
+    return menuList.map((_, index) => colors[index % colors.length]);
+  }, [menuList]);
 
   const addMenu = () => {
     if (menuInput.trim() && !menuList.includes(menuInput.trim())) {
@@ -22,48 +59,15 @@ const LunchRoulette: React.FC = () => {
     if (menuList.length === 0) return;
 
     setIsSpinning(true);
-    setSelectedMenu(null);
-
-    // 랜덤 메뉴 선택
-    const randomIndex = Math.floor(Math.random() * menuList.length);
-    const selectedMenuSector = menuList[randomIndex];
-
-    // 섹터 각도 계산
-    const sectorAngles = calculateSectorAngles();
-    const { startAngle, endAngle } = sectorAngles[randomIndex];
-    const midAngle = (startAngle + endAngle) / 2;
 
     // 추가 랜덤 회전 각도 (2~3바퀴)
     const additionalRotation = Math.floor(Math.random() * (1080 - 720 + 1)) + 720;
-
-    // 포인터와 정렬하기 위해 회전 각도 계산 (추가 회전 + 섹터 중앙각)
-    const targetRotation = additionalRotation + (360 - midAngle);
     
-    // 이전 회전각에 새 회전각 추가
-    setRotationAngle(prevAngle => prevAngle + targetRotation);
-    setSelectedMenu(selectedMenuSector);
+    setRotationAngle(prevAngle => prevAngle + additionalRotation);
 
-    // 스핀 종료
     setTimeout(() => {
       setIsSpinning(false);
     }, 3500);
-  };
-
-  // 메뉴 개수에 따라 섹터 각도 계산
-  const calculateSectorAngles = () => {
-    const totalMenus = menuList.length;
-    const baseAngle = 360 / totalMenus;
-    
-    return menuList.map((_, index) => {
-      const startAngle = index * baseAngle;
-      const endAngle = (index + 1) * baseAngle;
-      
-      return {
-        startAngle,
-        endAngle,
-        sweepAngle: baseAngle
-      };
-    });
   };
 
   // 극좌표계 기반 섹터 생성
@@ -94,8 +98,17 @@ const LunchRoulette: React.FC = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
-      <h1 className="text-2xl font-bold mb-6 text-center">점심 메뉴 룰렛</h1>
+    <div>
+                  <section className="bg-gray-100 py-16">
+                <div className="container mx-auto px-4">
+                    <div className="max-w-3xl mx-auto text-center">
+                        <h1 className="text-4xl font-bold mb-6">점심 메뉴 룰렛</h1>
+                        <p className="text-xl text-gray-600">
+                            메뉴를 추가하고 룰렛을 돌려보세요!
+                        </p>
+                    </div>
+                </div>
+            </section>
 
       <div className="mb-4">
         <div className="flex">
@@ -121,16 +134,17 @@ const LunchRoulette: React.FC = () => {
       <div className="mb-4">
         <h2 className="font-semibold mb-2">메뉴 목록:</h2>
         <div className="flex flex-wrap gap-2">
-          {menuList.map((menu) => (
+          {menuList.map((menu, index) => (
             <div 
               key={menu} 
-              className="bg-gray-200 px-3 py-1 rounded-full flex items-center"
+              className="px-3 py-1 rounded-full flex items-center text-white"
+              style={{ backgroundColor: sectorColors[index] }}
             >
               {menu}
               <button 
                 onClick={() => removeMenu(menu)}
                 disabled={isSpinning}
-                className="ml-2 text-red-500 hover:text-red-700 disabled:text-red-300"
+                className="ml-2 text-black hover:text-gray-800 disabled:text-gray-400"
               >
                 ✕
               </button>
@@ -155,17 +169,14 @@ const LunchRoulette: React.FC = () => {
               style={{ transform: 'rotate(-90deg)' }}
             >
               {menuList.map((menu, index) => {
-                const sectorAngles = calculateSectorAngles();
                 const { startAngle, endAngle } = sectorAngles[index];
-                const hue = Math.floor(Math.random() * 360);
-                
                 const sectorCenterPoint = calculateSectorCenterPoint(100, 100, 100, startAngle, endAngle);
                 
                 return (
                   <g key={menu}>
                     <path 
                       d={createSectorPath(100, 100, 100, startAngle, endAngle)}
-                      fill={`hsl(${hue}, 70%, 60%)`}
+                      fill={sectorColors[index]}
                     />
                     <text
                       x={sectorCenterPoint.x}
@@ -188,19 +199,20 @@ const LunchRoulette: React.FC = () => {
           )}
         </div>
         
-        {/* 포인터 - 부모 컨테이너 기준 절대 위치 */}
+        {/* 포인터 위치 수정 */}
         <div 
           className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 
                       w-4 h-4 bg-red-500 z-10"
           style={{
             clipPath: 'polygon(50% 100%, 0% 0%, 100% 0%)',
+            transform: 'translateY(-2px)',
           }}
         ></div>
       </div>
 
       <button 
         onClick={spinRoulette} 
-        disabled={menuList.length === 0 || isSpinning}
+        disabled={menuList.length <= 1 || isSpinning}
         className="w-full bg-green-500 text-white p-3 rounded-lg 
                    hover:bg-green-600 disabled:bg-gray-300"
       >

@@ -36,12 +36,12 @@ const MainLayout = () => {
 
                         {/* 데스크탑 네비게이션 */}
                         <nav className="hidden md:flex space-x-8">
-                            <Link to="/" className="text-gray-600 hover:text-blue-600">홈</Link>
+                            <Link to="/" className="text-gray-600 hover:text-blue-600">점심룰렛</Link>
                             <Link to="/about" className="text-gray-600 hover:text-blue-600">회사소개</Link>
                             <Link to="/franchise" className="text-gray-600 hover:text-blue-600">프랜차이즈</Link>
                             <Link to="/stores" className="text-gray-600 hover:text-blue-600">매장안내</Link>
                             <Link to="/contact" className="text-gray-600 hover:text-blue-600">문의하기</Link>
-                            <Link to="/lunch-roulette" className="text-gray-600 hover:text-blue-600">점심 룰렛</Link>
+                            <Link to="/home" className="text-gray-600 hover:text-blue-600">홈</Link>
                         </nav>
                     </div>
 
@@ -49,12 +49,12 @@ const MainLayout = () => {
                     {isMenuOpen && (
                         <div className="md:hidden mt-4 pb-4">
                             <nav className="flex flex-col space-y-4">
-                                <Link to="/" className="text-gray-600 hover:text-blue-600">홈</Link>
+                                <Link to="/" className="text-gray-600 hover:text-blue-600">점심룰렛</Link>
                                 <Link to="/about" className="text-gray-600 hover:text-blue-600">회사소개</Link>
                                 <Link to="/franchise" className="text-gray-600 hover:text-blue-600">프랜차이즈</Link>
                                 <Link to="/stores" className="text-gray-600 hover:text-blue-600">매장안내</Link>
                                 <Link to="/contact" className="text-gray-600 hover:text-blue-600">문의하기</Link>
-                                <Link to="/lunch-roulette" className="text-gray-600 hover:text-blue-600">점심 룰렛</Link>
+                                <Link to="/home" className="text-gray-600 hover:text-blue-600">홈</Link>
                             </nav>
                         </div>
                     )}

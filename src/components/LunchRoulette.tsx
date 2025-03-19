@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 const LunchRoulette: React.FC = () => {
   const [menuInput, setMenuInput] = useState<string>('');

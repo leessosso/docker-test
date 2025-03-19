@@ -3,7 +3,6 @@ import React, { useState, useMemo } from 'react';
 const LunchRoulette: React.FC = () => {
   const [menuInput, setMenuInput] = useState<string>('');
   const [menuList, setMenuList] = useState<string[]>([]);
-  const [selectedMenu, setSelectedMenu] = useState<string | null>(null);
   const [isSpinning, setIsSpinning] = useState<boolean>(false);
   const [rotationAngle, setRotationAngle] = useState<number>(0);
 
@@ -218,13 +217,6 @@ const LunchRoulette: React.FC = () => {
       >
         {isSpinning ? '돌리는 중...' : '룰렛 돌리기'}
       </button>
-
-      {selectedMenu && !isSpinning && (
-        <div className="mt-4 text-center">
-          <h2 className="text-xl font-bold">오늘의 점심 메뉴:</h2>
-          <p className="text-2xl text-green-600 font-bold animate-bounce">{selectedMenu}</p>
-        </div>
-      )}
     </div>
   );
 };

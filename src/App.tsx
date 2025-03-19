@@ -5,6 +5,7 @@ import About from './pages/About';
 import Franchise from './pages/Franchise';
 import Stores from './pages/Stores';
 import Contact from './pages/Contact';
+import LunchRoulette from './components/LunchRoulette';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Route path="franchise" element={<Franchise />} />
           <Route path="stores" element={<Stores />} />
           <Route path="contact" element={<Contact />} />
+          <Route path="lunch-roulette" element={<LunchRoulette />} />
         </Route>
       </Routes>
     </Router>

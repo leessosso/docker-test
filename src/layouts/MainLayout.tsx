@@ -16,7 +16,7 @@ const MainLayout = () => {
             <header className="bg-white shadow-md">
                 <div className="container mx-auto px-4 py-4">
                     <div className="flex justify-between items-center">
-                        <Link to="/" className="text-2xl font-bold text-blue-600">README.md 수정 Typescript 버전 통일 0318</Link>
+                        <Link to="/" className="text-2xl font-bold text-blue-600">룰렛 추가중 0319</Link>
 
                         {/* 모바일 메뉴 버튼 */}
                         <div className="md:hidden">
@@ -41,6 +41,7 @@ const MainLayout = () => {
                             <Link to="/franchise" className="text-gray-600 hover:text-blue-600">프랜차이즈</Link>
                             <Link to="/stores" className="text-gray-600 hover:text-blue-600">매장안내</Link>
                             <Link to="/contact" className="text-gray-600 hover:text-blue-600">문의하기</Link>
+                            <Link to="/lunch-roulette" className="text-gray-600 hover:text-blue-600">점심 룰렛</Link>
                         </nav>
                     </div>
 
@@ -53,6 +54,7 @@ const MainLayout = () => {
                                 <Link to="/franchise" className="text-gray-600 hover:text-blue-600">프랜차이즈</Link>
                                 <Link to="/stores" className="text-gray-600 hover:text-blue-600">매장안내</Link>
                                 <Link to="/contact" className="text-gray-600 hover:text-blue-600">문의하기</Link>
+                                <Link to="/lunch-roulette" className="text-gray-600 hover:text-blue-600">점심 룰렛</Link>
                             </nav>
                         </div>
                     )}

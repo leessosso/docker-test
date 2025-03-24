@@ -42,6 +42,7 @@ const MainLayout = () => {
                             <Link to="/stores" className="text-gray-600 hover:text-blue-600">매장안내</Link>
                             <Link to="/contact" className="text-gray-600 hover:text-blue-600">문의하기</Link>
                             <Link to="/home" className="text-gray-600 hover:text-blue-600">홈</Link>
+                            <Link to="/youtube-extractor" className="text-gray-600 hover:text-blue-600">유튜브 추출기</Link>
                         </nav>
                     </div>
 
@@ -55,6 +56,7 @@ const MainLayout = () => {
                                 <Link to="/stores" className="text-gray-600 hover:text-blue-600">매장안내</Link>
                                 <Link to="/contact" className="text-gray-600 hover:text-blue-600">문의하기</Link>
                                 <Link to="/home" className="text-gray-600 hover:text-blue-600">홈</Link>
+                                <Link to="/youtube-extractor" className="text-gray-600 hover:text-blue-600">유튜브 추출기</Link>
                             </nav>
                         </div>
                     )}

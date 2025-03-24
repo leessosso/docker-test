@@ -6,6 +6,8 @@ import Franchise from './pages/Franchise';
 import Stores from './pages/Stores';
 import Contact from './pages/Contact';
 import LunchRoulette from './pages/LunchRoulette';
+import YouTubeExtractor from './pages/YouTubeExtractor';
+import YouTubeCallback from './pages/YouTubeCallback';
 
 function App() {
   return (
@@ -18,6 +20,8 @@ function App() {
           <Route path="stores" element={<Stores />} />
           <Route path="contact" element={<Contact />} />
           <Route path="home" element={<Home />} />
+          <Route path="youtube-extractor" element={<YouTubeExtractor />} />
+          <Route path="youtube-callback" element={<YouTubeCallback />} />
         </Route>
       </Routes>
     </Router>
